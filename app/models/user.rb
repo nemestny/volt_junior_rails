@@ -1,6 +1,8 @@
 class User < ApplicationRecord
+  has_secure_password
+
   has_many :posts
   has_many :comments
 
-  validates :nickname, :email, :password, presence: true
+  validates :nickname, :email, presence: true
 end
