@@ -53,3 +53,5 @@ gem "bcrypt", "~> 3.1"
 gem "jwt", "~> 2.1"
 
 gem "simple_command", "~> 0.0.9"
+
+gem "active_model_serializers", "~> 0.10.8"
