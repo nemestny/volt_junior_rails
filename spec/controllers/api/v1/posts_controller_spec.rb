@@ -49,6 +49,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   let(:incorrect_show_post) { {params: {id: @posts.last.id+1}}}
   let(:correct_index_post) { {params: {page: 1, per_page: 10}}}
   let(:incorrect_index_post) { {params: {page: 100, per_page: 10}}} #if posts < 990
+  let(:blank_index_post) { {params: {}}}
   
   describe 'post show' do
     context 'when user authorised' do
@@ -71,6 +72,12 @@ RSpec.describe Api::V1::PostsController, type: :controller do
       request.headers["Authorization"] = @token
       resp = get :index, incorrect_index_post
       expect(JSON.parse(resp.body).count).to eq(0)
+    end
+
+    it 'should return empty list of posts' do
+      request.headers["Authorization"] = @token
+      resp = get :index, blank_index_post
+      expect(JSON.parse(resp.body).count).to_not eq(0)
     end
 
     it 'should return correct list of posts' do
