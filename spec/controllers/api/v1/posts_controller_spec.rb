@@ -42,13 +42,13 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   end
 
   before (:all) do
-    @posts = create_list(:post,5)
+    @posts = create_list(:post,10)
   end
 
   let(:correct_show_post) { {params: {id: @posts.last.id}}}
   let(:incorrect_show_post) { {params: {id: @posts.last.id+1}}}
-  let(:correct_index_post) { {params: {page: 1, per_page: 3}}}
-  let(:incorrect_index_post) { {params: {page: 10, per_page: 10}}} #if posts < 90
+  let(:correct_index_post) { {params: {page: 1, per_page: 10}}}
+  let(:incorrect_index_post) { {params: {page: 100, per_page: 10}}} #if posts < 990
   
   describe 'post show' do
     context 'when user authorised' do
@@ -67,10 +67,16 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   end
 
   describe 'posts index' do
-    it 'should return error message' do
+    it 'should return empty list of posts' do
+      request.headers["Authorization"] = @token
+      resp = get :index, incorrect_index_post
+      expect(JSON.parse(resp.body).count).to eq(0)
+    end
+
+    it 'should return correct list of posts' do
       request.headers["Authorization"] = @token
       resp = get :index, correct_index_post
-      expect(JSON.parse(resp.body)).to eq({})
+      expect(JSON.parse(resp.body).count).to eq(10)
     end
   end
 end

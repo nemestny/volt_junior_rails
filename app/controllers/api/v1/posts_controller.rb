@@ -4,7 +4,13 @@ module Api
 
 #curl -H "Authorization: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1NDk0MzIxNzN9.nAiorIPk1gqOP71SHyABn9HbjFvAzqB002sibJOpfks" http://localhost:3000/api/v1/posts.json     
       def index
-        posts = Post.all
+        posts = Post.order(published_at: :desc).page(permit_params[:page]).per(permit_params[:per_page])
+        posts_count = Post.count
+        pages_count = Post.page(1).per(permit_params[:per_page]).total_pages
+
+        response.set_header('POSTS_COUNT', posts_count)
+        response.set_header('PAGES_COUNT', pages_count)
+        
         render json: posts
       end
 
@@ -13,6 +19,7 @@ module Api
         post = Post.new permit_params
         post.user = current_user
         post.published_at ||= Time.now
+        
         if post.valid?
           post.save
           render json: post
