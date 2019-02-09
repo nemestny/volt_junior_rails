@@ -3,3 +3,16 @@
 <h1>
   <%= @current_user.id %>
 </h1>
+
+<% if @current_user.avatar.attached? %>
+  <%= image_tag(@current_user.avatar.url) %>
+<% end %>
+<%= form_with(url: api_v1_user_path(@current_user), method: :patch ) do |f| %>
+
+  <%= f.label :avatar, class: 'col-sm-2 control-label'  %>
+
+  <%= f.file_field :avatar, multiple: true, direct_upload: true %>
+
+  <%= f.submit %>
+
+<% end %>

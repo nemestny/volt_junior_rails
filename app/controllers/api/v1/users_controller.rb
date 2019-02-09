@@ -8,6 +8,14 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def update
+    @current_user.avatar.attach(permit_params[:avatar])
+    p @current_user.avatar.attached?
+  end
+
+  private
+
+  def permit_params
+    params.permit(:avatar)
   end
 
 end

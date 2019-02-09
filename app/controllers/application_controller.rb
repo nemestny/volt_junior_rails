@@ -12,7 +12,7 @@ class ApplicationController < ActionController::API
     puts '*'*7
 
     if request.format.html?
-      @current_user = User.find(session[:user_id]) if session[:user_id]
+      @current_user = User.find_by(id: session[:user_id]) if session[:user_id]
       render :login unless @current_user
     else
       @current_user = AuthorizeApiRequest.call(request.headers).result

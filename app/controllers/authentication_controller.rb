@@ -12,13 +12,8 @@ class AuthenticationController < ApplicationController
 
     if request.format.html?
 
-      if command.success?
-        session[:user_id] = command.result[:user_id]
+        session[:user_id] = command.result[:user_id] if command.success?
         redirect_to root_path
-      else
-        render :login
-      end
-    
     else     
       
       if command.success?
