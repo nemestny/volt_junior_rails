@@ -7,8 +7,16 @@ class ApplicationController < ActionController::API
   private
 
   def authenticate_request
-    @current_user = AuthorizeApiRequest.call(request.headers).result
-    # @current_user = User.last
-    render json: { error: 'Not Authorized' }, status: 401 unless @current_user
+    puts '*'*7
+    p request.format.html?
+    puts '*'*7
+
+    if request.format.html?
+      @current_user = User.find(session[:user_id]) if session[:user_id]
+      render :login unless @current_user
+    else
+      @current_user = AuthorizeApiRequest.call(request.headers).result
+      render json: { error: 'Not Authorized' }, status: 401 unless @current_user
+    end
   end
 end

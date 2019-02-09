@@ -1,10 +1,13 @@
 class Api::V1::UsersController < ApplicationController
-  skip_before_action :authenticate_request
+  include ActionController::RequestForgeryProtection
+
+  # skip_before_action :authenticate_request
+  protect_from_forgery with: :exception, unless: -> { request.format.json? }
 
   def edit
-    render layout: 'layouts/application'
   end
 
   def update
   end
+
 end

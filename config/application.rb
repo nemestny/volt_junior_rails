@@ -30,5 +30,9 @@ module VoltJuniorRails
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.session_store :cookie_store, key: "_YOUR_APP_session_#{Rails.env}"
+    config.middleware.use ActionDispatch::Cookies # Required for all session management
+    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
   end
 end
