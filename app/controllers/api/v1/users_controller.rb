@@ -10,9 +10,18 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def update
-    @current_user.avatar.attach(permit_params[:avatar]) if permit_params[:avatar]
-    p @current_user.avatar.attached?
-    redirect_to root_path
+    avatar = permit_params[:avatar]
+    if avatar && avatar.size < 3.megabytes 
+      @current_user.avatar.attach(avatar)
+      @errors = nil
+      redirect_to root_path
+    elsif avatar
+      @errors = 'Should be less than 3MB'
+      render :edit
+    else
+      @errors = 'No file'
+      render :edit
+    end
   end
 
   private
