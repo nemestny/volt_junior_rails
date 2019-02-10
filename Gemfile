@@ -63,3 +63,5 @@ gem "bootstrap", "~> 4.1"
 gem "image_processing", "~> 1.7"
 
 gem "jquery-rails", "~> 4.3"
+
+gem "aws-sdk-s3", require: false
