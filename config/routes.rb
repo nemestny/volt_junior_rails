@@ -7,12 +7,12 @@ Rails.application.routes.draw do
       # constraints lambda { |req| req.format == :json } do #routes for json only
         resources :posts, only: [:index, :create, :show]
         resources :users, only: [:edit, :update]
+        # resources :reports, only: [:new]
+        post 'reports/:type', to: 'reports#create', as: :reports
         # root to: 'users#edit'
       # end
     end
   end
-
-
   
   post 'authenticate', to: 'authentication#authenticate'
   get 'logout', to: 'authentication#logout'
