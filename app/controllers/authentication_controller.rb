@@ -6,7 +6,6 @@ class AuthenticationController < ApplicationController
     puts '-'*7
     p request.format
     puts '-'*7
-
     
     command = AuthenticateUser.call(params[:email], params[:password])
 
@@ -22,5 +21,10 @@ class AuthenticationController < ApplicationController
         render json: { error: command.errors }, status: :unauthorized
       end
     end
+  end
+
+  def logout
+    reset_session
+    redirect_to root_path
   end
 end

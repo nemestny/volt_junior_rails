@@ -1,11 +1,5 @@
 Rails.application.routes.draw do
 
-  # namespace :api do
-  #   namespace :v1 do
-  #     get 'users/edit'
-  #     get 'users/update'
-  #   end
-  # end
   root to: 'api/v1/users#edit'
 
   namespace :api do
@@ -21,6 +15,7 @@ Rails.application.routes.draw do
 
   
   post 'authenticate', to: 'authentication#authenticate'
+  get 'logout', to: 'authentication#logout'
 #  get '*path', to: 'api/v1/home#index', via: [:get, :post, :patch, :delete]
 
 end
