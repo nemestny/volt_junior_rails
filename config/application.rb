@@ -35,6 +35,6 @@ module VoltJuniorRails
     config.middleware.use ActionDispatch::Cookies # Required for all session management
     config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
 
-    config.active_storage.variant_processor = :vips
+    # config.active_storage.variant_processor = :vips
   end
 end
