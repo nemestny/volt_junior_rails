@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <table>
+      <tr>
+        <% @report_columns.each do |th|%>
+          <th><%= th %></th>
+        <% end %>
+      </tr>
+      <% @report_rows.each do |row| %>
+        <tr>
+          <% row.each do |td|%>
+          <th><%= td %></th>
+        <% end %>
+        </tr>
+      <% end %>
+    </table>
+  </body>
+</html>

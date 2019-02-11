@@ -12,7 +12,13 @@ class ReportsGenerateJob < ApplicationJob
                                         GROUP BY user_id) AS posts ON users.id = posts.user_id
                                         INNER JOIN (SELECT user_id, COUNT(*) AS comments_count FROM comments
                                         WHERE comments.published_at BETWEEN '#{start_date}' AND '#{end_date}'
-                                        GROUP BY user_id) AS comments ON users.id = comments.user_id")
-    
+                                        GROUP BY user_id) AS comments ON users.id = comments.user_id
+                                        ORDER BY ((10 * posts.posts_count)+comments.comments_count) DESC")
+
+    ReportMailer.with(report_columns: report.columns,
+                       report_rows: report.rows,
+                       email: email,
+                       start_date: start_date,
+                       end_date: end_date).report_mail.deliver_later
   end
 end
