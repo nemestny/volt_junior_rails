@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.2'
+gem 'rails',  github: "rails/rails"
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
@@ -57,3 +57,11 @@ gem "simple_command", "~> 0.0.9"
 gem "active_model_serializers", "~> 0.10.8"
 
 gem "kaminari", "~> 1.1"
+
+gem "bootstrap", "~> 4.1"
+
+gem "image_processing", "~> 1.7"
+
+gem "jquery-rails", "~> 4.3"
+
+gem "aws-sdk-s3", require: false
