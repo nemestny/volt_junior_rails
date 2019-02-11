@@ -1,17 +1,30 @@
 class AuthenticationController < ApplicationController
   skip_before_action :authenticate_request
-  # skip_before_action :verify_authenticity_token
-
-  # skip_before_filter :verify_authenticity_token, :only => :create
 
 
   def authenticate
+    puts '-'*7
+    p request.format
+    puts '-'*7
+    
     command = AuthenticateUser.call(params[:email], params[:password])
 
-    if command.success?
-      render json: { auth_token: command.result }
-    else
-      render json: { error: command.errors }, status: :unauthorized
+    if request.format.html?
+
+        session[:user_id] = command.result[:user_id] if command.success?
+        redirect_to root_path
+    else     
+      
+      if command.success?
+        render json: { auth_token: command.result[:token] }
+      else
+        render json: { error: command.errors }, status: :unauthorized
+      end
     end
+  end
+
+  def logout
+    reset_session
+    redirect_to root_path
   end
 end

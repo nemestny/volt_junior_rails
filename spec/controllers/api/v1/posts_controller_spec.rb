@@ -6,6 +6,7 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   describe 'any action' do
     context 'when user not authorised' do
       it 'should return error message' do
+        request.headers["Authorization"] = nil
         resp = post :create
         # p resp.body
         expect(JSON.parse(resp.body)['error']).to eq('Not Authorized')
@@ -16,6 +17,12 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   before (:all) do
     @user = create(:user)
     @token = JsonWebToken.encode(user_id: @user.id)
+
+  end
+
+  before (:each) do 
+    request.env["HTTP_ACCEPT"] = 'application/json'
+    request.headers["Authorization"] = @token
   end
 
   let(:correct_create_post) { {params: {title: 'example title', body: 'example body', published_at: Time.now }}}
@@ -25,13 +32,13 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   describe 'post create' do
     context 'when user authorised' do
       it 'should return error message with body' do
-        request.headers["Authorization"] = @token
+        
         resp = post :create, incorrect_create_post
         expect(JSON.parse(resp.body)['errors']).to include('body')
       end
 
       it 'should return created post' do
-        request.headers["Authorization"] = @token
+        # request.headers["Authorization"] = @token
         resp = post :create, correct_create_post
         expect(JSON.parse(resp.body)['id']).to_not be_nil
         expect(JSON.parse(resp.body)['title']).to eq('example title')
@@ -54,13 +61,13 @@ RSpec.describe Api::V1::PostsController, type: :controller do
   describe 'post show' do
     context 'when user authorised' do
       it 'should return error message' do
-        request.headers["Authorization"] = @token
+        # request.headers["Authorization"] = @token
         resp = get :show, incorrect_show_post
         expect(JSON.parse(resp.body)['errors']).to_not be_nil
       end
 
       it 'should return post' do
-        request.headers["Authorization"] = @token
+        # request.headers["Authorization"] = @token
         resp = get :show, correct_show_post
         expect(JSON.parse(resp.body)['title']).to eq(@posts.last.title)
       end
@@ -69,19 +76,19 @@ RSpec.describe Api::V1::PostsController, type: :controller do
 
   describe 'posts index' do
     it 'should return empty list of posts' do
-      request.headers["Authorization"] = @token
+      # request.headers["Authorization"] = @token
       resp = get :index, incorrect_index_post
       expect(JSON.parse(resp.body).count).to eq(0)
     end
 
     it 'should return empty list of posts' do
-      request.headers["Authorization"] = @token
+      # request.headers["Authorization"] = @token
       resp = get :index, blank_index_post
       expect(JSON.parse(resp.body).count).to_not eq(0)
     end
 
     it 'should return correct list of posts' do
-      request.headers["Authorization"] = @token
+      # request.headers["Authorization"] = @token
       resp = get :index, correct_index_post
       expect(JSON.parse(resp.body).count).to eq(10)
     end
