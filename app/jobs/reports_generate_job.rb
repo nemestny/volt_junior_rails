@@ -2,22 +2,17 @@ class ReportsGenerateJob < ApplicationJob
   queue_as :default
 
   def perform(*params)
-    start_date = params[0][:start_date] || (Time.now.midnight - 1.day)
-    end_date = params[0][:end_date] || Time.now.midnight
+    start_date = params[0][:start_date] || (Time.now - 1.day)
+    end_date = params[0][:end_date] || Time.now
     email = params[0][:email] || 'nemestny@politeh.ru'
 
-    time_range = start_date..end_date
-    users = User
-            .left_outer_joins(:posts)
-            .left_outer_joins(:comments)
-            .where(posts: {published_at: time_range}, comments: {published_at: time_range})
-            .distinct
-            .select('users.nickname, users.email, COUNT(posts.*) AS posts_count, COUNT(comments.*) AS comments_count')
-            .group('users.id')
-            .group('users.id')
-    users.each do |user|
-      puts "- #{user.nickname} - #{user.email} - posts: #{user.posts_count} - comments: #{user.comments_count}"
-    end
-    # Do something later
+    report = User.connection.select_all("SELECT users.nickname, users.email, posts.posts_count, comments.comments_count FROM users
+                                        INNER JOIN (SELECT user_id, COUNT(*) AS posts_count FROM posts
+                                        WHERE posts.published_at BETWEEN '#{start_date}' AND '#{end_date}'
+                                        GROUP BY user_id) AS posts ON users.id = posts.user_id
+                                        INNER JOIN (SELECT user_id, COUNT(*) AS comments_count FROM comments
+                                        WHERE comments.published_at BETWEEN '#{start_date}' AND '#{end_date}'
+                                        GROUP BY user_id) AS comments ON users.id = comments.user_id")
+    
   end
 end
